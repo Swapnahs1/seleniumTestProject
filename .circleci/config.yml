@@ -1,0 +1,76 @@
+version: 2.1
+
+executors:
+  python-executor:
+    docker:
+      - image: cimg/python:3.8  # Next-gen Python 3.8 image for CircleCI
+    working_directory: ~/repo
+
+jobs:
+  test:
+    executor: python-executor
+    steps:
+      - checkout  # Check out the code from the repository
+
+      # Install Chrome dependencies
+      - run:
+          name: Install Chrome dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y wget curl unzip
+            sudo apt-get install -y libx11-dev libgconf-2-4 libnss3 libgdk-pixbuf2.0-0 libxcomposite1 libxdamage1 libxi6 libxtst6
+            sudo apt-get install -y libasound2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdbus-1-3 libgdk-pixbuf2.0-0
+            sudo apt-get install -y libnspr4 libnss3 libxrandr2
+
+      # Install Google Chrome
+      - run:
+          name: Install Google Chrome
+          command: |
+            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo dpkg -i google-chrome-stable_current_amd64.deb || true
+            sudo apt-get -f install -y  # Fix any missing dependencies
+
+      # Install ChromeDriver based on Chrome version
+      - run:
+          name: Install ChromeDriver
+          command: |
+            # Get the version of Google Chrome (e.g., 13106778204 -> 13106778204)
+            CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | sed 's/\([0-9]*\)\([0-9]*\)/\1/g' | tr -d '.')
+            echo "Detected Chrome version: $CHROME_VERSION"
+
+            # Fetch the corresponding ChromeDriver version
+            CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+            echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION"
+
+            # Check if the ChromeDriver version is empty or not found
+            if [ -z "$CHROMEDRIVER_VERSION" ]; then
+              echo "Error: Unable to find a matching ChromeDriver version for Chrome version $CHROME_VERSION"
+              exit 1
+            fi
+
+            # Download ChromeDriver and install it
+            wget https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.204/linux64/chromedriver-linux64.zip
+            unzip chromedriver-linux64.zip
+            sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+
+      # Install Python dependencies from requirements.txt
+      - run:
+          name: Install dependencies from requirements.txt
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt  # Install all dependencies listed in requirements.txt
+
+      # Run the test script
+      - run:
+          name: Run tests
+          command: |
+            source venv/bin/activate  # Activate the virtual environment
+            pytest                  # Run the tests with pytest
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test

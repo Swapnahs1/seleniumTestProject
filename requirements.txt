@@ -1,0 +1,6 @@
+pip~=24.3.1
+pytest==7.2.2
+requests
+attrs~=24.3.0
+selenium~=4.27.1
+webdriver_manager==3.8.1  # Version for managing ChromeDriver
