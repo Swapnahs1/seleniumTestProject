@@ -67,7 +67,7 @@ jobs:
           name: Run tests
           command: |
             source venv/bin/activate  # Activate the virtual environment
-            pytest                  # Run the tests with pytest
+            pytest ./testFiles                  # Run the tests with pytest
 
 workflows:
   version: 2
