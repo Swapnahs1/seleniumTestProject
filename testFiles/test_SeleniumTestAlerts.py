@@ -10,9 +10,9 @@ import time
 def driver():
     # Set up the driver
     options = Options()
-    # options.add_argument('--headless')  # Run in headless mode for CI
-    # options.add_argument('--disable-gpu')  # Disable GPU for CI
-    # options.add_argument('--no-sandbox')  # Necessary for CircleCI
+    options.add_argument('--headless')  # Run in headless mode for CI
+    options.add_argument('--disable-gpu')  # Disable GPU for CI
+    options.add_argument('--no-sandbox')  # Necessary for CircleCI
     driver = webdriver.Chrome(options=options)
     yield driver
         # Teardown: Close the browser after tests
