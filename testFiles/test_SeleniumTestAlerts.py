@@ -18,7 +18,7 @@ def driver():
         # Teardown: Close the browser after tests
     driver.quit()
 
-def test_register_user(driver):
+def test_Alert_Box(driver):
     # Open the page
     driver.get('https://www.tutorialspoint.com/selenium/practice/alerts.php')
 
