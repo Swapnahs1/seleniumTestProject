@@ -1,9 +1,9 @@
 from selenium import webdriver
 import pytest
-import os
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 
 @pytest.fixture(scope="module")
@@ -18,7 +18,7 @@ def driver():
         # Teardown: Close the browser after tests
     driver.quit()
 
-def test_Alert_Box(driver):
+def test_Drag_Drop(driver):
     # Open the page
     driver.get('https://www.tutorialspoint.com/selenium/practice/alerts.php')
 
@@ -30,26 +30,26 @@ def test_Alert_Box(driver):
     # alertClcik = driver.find_element(By.XPATH,"/html/body/main/div/div/div[2]/div[1]/button")
     # alertClcik.click()
     try:
-        # Open the target URL
-        driver.get('https://www.tutorialspoint.com/selenium/practice/alerts.php')
 
-        # Click the button that triggers the alert
-        driver.find_element(By.XPATH, "/html/body/main/div/div/div[2]/div[1]/button").click()
+        # Open the target page
+        driver.get('https://www.tutorialspoint.com/selenium/practice/droppable.php')
 
-        # Wait for the alert to appear (optional, can adjust sleep time)
+        # Maximize the browser window
+        driver.maximize_window()
+
+        # Allow the page to load fully
         time.sleep(2)
 
-        # Switch to the alert and assert its message
-        alert = Alert(driver)
-        
-        # Assert the alert's text
-        alert_text = alert.text
-        assert alert_text == "Hello world!"
+        # Locate the draggable and droppable elements
+        draggable = driver.find_element(By.ID, 'draggable')
+        droppable = driver.find_element(By.ID, 'droppable')
 
-        # Accept the alert (click on OK)
-        alert.accept()
+        # Perform the drag and drop action
+        action = ActionChains(driver)
+        action.drag_and_drop(draggable, droppable).perform()
 
-        print("Alert is handled successfully!")
+        # Wait for a few seconds to visually confirm the action
+        time.sleep(2)
 
     except Exception as e:
             print(f"Error occurred: {e}")
