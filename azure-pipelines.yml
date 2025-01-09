@@ -10,7 +10,7 @@ jobs:
   steps:
 
     # Checkout the code from the repository
-    - task: Checkout@2  # This is a predefined Azure DevOps task to check out your repository
+    - checkout: self  # This is the correct syntax for checking out your repository in Azure DevOps
 
     # Install Chrome dependencies
     - script: |
