@@ -41,15 +41,18 @@ jobs:
           CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | sed 's/\([0-9]*\)\([0-9]*\)/\1/g' | tr -d '.')
           echo "Detected Chrome version: $CHROME_VERSION"
           
+          # Fetch the corresponding ChromeDriver version
           CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
           echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION"
           
+          # Check if the ChromeDriver version is empty or not found
           if [ -z "$CHROMEDRIVER_VERSION" ]; then
             echo "Error: Unable to find a matching ChromeDriver version for Chrome version $CHROME_VERSION"
             exit 1
           fi
           
-          wget https://storage.googleapis.com/chrome-for-testing-public/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip
+          # Download ChromeDriver and install it
+          wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver-linux64.zip
           unzip chromedriver-linux64.zip
           sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
 
