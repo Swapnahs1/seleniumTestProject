@@ -10,7 +10,7 @@ jobs:
   steps:
 
     # Checkout the code from the repository
-    - task: Checkout@2
+    - checkout: self  # This is the correct syntax for checking out your repository in Azure DevOps
 
     # Install Chrome dependencies
     - script: |
@@ -63,10 +63,11 @@ jobs:
         pytest ./testFiles                  # Run the tests with pytest
       displayName: 'Run tests'
 
-# Publish test results to Azure DevOps (Optional step for test result reporting)
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/test-*.xml'  # Adjust this based on your pytest output format
-    mergeTestResults: true
-  condition: succeededOrFailed()  # Always run this step, even if the tests fail
+    # Publish test results to Azure DevOps (Optional step for test result reporting)
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/test-*.xml'  # Adjust this based on your pytest output format
+        mergeTestResults: true
+      condition: succeededOrFailed()  # Always run this step, even if the tests fail
+      displayName: 'Publish Test Results'
