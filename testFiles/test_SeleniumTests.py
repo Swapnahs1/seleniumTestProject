@@ -57,7 +57,7 @@ def test_register_user(driver):
     file_input = driver.find_element(By.ID, 'picture')  # Find file input field by 'name' attribute
 
     # Specify the path to the file you want to upload
-    file_path = os.path.join("picture", "DSCN1062.JPG")
+    file_path = os.path.join(os.getcwd(),"picture", "DSCN1062.JPG")
     absolute_path = os.path.abspath(file_path)
 
     if os.path.exists(absolute_path):
